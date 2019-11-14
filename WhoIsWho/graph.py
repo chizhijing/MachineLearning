@@ -154,14 +154,14 @@ class GraphTitles(GraphBase):
         similarity_lsi = similarities.MatrixSimilarity(lsi_corpus)
         self.sim_matrix=similarity_lsi[lsi_corpus]
 
-    def get_cluster(self):
+    def get_cluster(self,eps_dist=0.01,num_max=10):
         init_clusters=self.get_connected_components()
         if len(init_clusters)==0: return init_clusters
         
         counter=0
         while True:
             counter+=1
-            if counter>10: break
+            if counter>num_max: break
             min_dist=10000
             index1=-1
             index2=-1
@@ -173,7 +173,7 @@ class GraphTitles(GraphBase):
                         index1=i1
                         index2=i2
                         min_dist=dist_cluster
-            if min_dist<0.01:
+            if min_dist<eps_dist:
                 new_cluster=init_clusters[index1]+init_clusters[index2]
                 init_clusters.pop(index2)
                 init_clusters.pop(index1)
@@ -258,22 +258,22 @@ if __name__=="__main__":
     for author_select in author_list:
         real_res={author_select:t_tag[author_select]}
         model_author={author_select: graph_author_dict[author_select].get_connected_components()}
-        model_author2={author_select: graph_author_dict2[author_select].get_connected_components()}
-        model_title={author_select:graph_title_dict[author_select].get_connected_components()}
-        model_at={author_select:graph_at_dict[author_select].get_connected_components()}
-        model_a2t={author_select:graph_a2t_dict[author_select].get_connected_components()}
+#        model_author2={author_select: graph_author_dict2[author_select].get_connected_components()}
+#        model_title={author_select:graph_title_dict[author_select].get_connected_components()}
+#        model_at={author_select:graph_at_dict[author_select].get_connected_components()}
+#        model_a2t={author_select:graph_a2t_dict[author_select].get_connected_components()}
         model_at2={author_select:graph_at2_dict[author_select]}
         print(author_select,len(real_res[author_select]))
         print('----> model_author',
               '%.2f'%pairwise_f1(real_res,model_author),len(model_author[author_select]))
-        print('----> model_author2',
-              '%.2f'%pairwise_f1(real_res,model_author2),len(model_author2[author_select]))
-        print('----> model_title',
-              '%.2f'%pairwise_f1(real_res,model_title),len(model_title[author_select]))
-        print('----> model_at',
-              '%.2f'%pairwise_f1(real_res,model_at),len(model_at[author_select]))
-        print('----> model_a2t',
-              '%.2f'%pairwise_f1(real_res,model_a2t),len(model_a2t[author_select]))
+#        print('----> model_author2',
+#              '%.2f'%pairwise_f1(real_res,model_author2),len(model_author2[author_select]))
+#        print('----> model_title',
+#              '%.2f'%pairwise_f1(real_res,model_title),len(model_title[author_select]))
+#        print('----> model_at',
+#              '%.2f'%pairwise_f1(real_res,model_at),len(model_at[author_select]))
+#        print('----> model_a2t',
+#              '%.2f'%pairwise_f1(real_res,model_a2t),len(model_a2t[author_select]))
         print('----> model_at2',
               '%.2f'%pairwise_f1(real_res,model_at2),len(model_at2[author_select]))
 
