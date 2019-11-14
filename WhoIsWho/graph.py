@@ -156,8 +156,12 @@ class GraphTitles(GraphBase):
 
     def get_cluster(self):
         init_clusters=self.get_connected_components()
-
+        if len(init_clusters)==0: return init_clusters
+        
+        counter=0
         while True:
+            counter+=1
+            if counter>10: break
             min_dist=10000
             index1=-1
             index2=-1
@@ -190,6 +194,7 @@ class GraphTitles(GraphBase):
                     min_dist=1-self.sim_matrix[index1][index2]
             if min_dist>max_dist:
                 max_dist=min_dist
+        return max_dist
                 
 
 if __name__=="__main__":
@@ -205,6 +210,7 @@ if __name__=="__main__":
     graph_title_dict={}
     graph_at_dict={}
     graph_a2t_dict={}
+    graph_at2_dict={}
     
     # 使用作者信息进行聚类的结果
     for author_select in author_list:
@@ -240,6 +246,13 @@ if __name__=="__main__":
         graph_a2t.get_dist_matrix()
         graph_a2t.add_edge()
         graph_a2t_dict[author_select]=graph_a2t
+    # 使用作者信息1+title进行聚类，分层次进行 title计算距离针对两个集合(经过作者信息聚集过的子类)进行
+    for author_select in author_list:
+        graph_at2=GraphTitles(t_data[author_select],0.99)
+        graph_at2.set_init_graph(graph_author_dict[author_select].graph)
+        graph_at2.get_dist_matrix()
+        graph_at2_dict[author_select]=graph_at2.get_cluster()
+
         
     
     for author_select in author_list:
@@ -249,6 +262,7 @@ if __name__=="__main__":
         model_title={author_select:graph_title_dict[author_select].get_connected_components()}
         model_at={author_select:graph_at_dict[author_select].get_connected_components()}
         model_a2t={author_select:graph_a2t_dict[author_select].get_connected_components()}
+        model_at2={author_select:graph_at2_dict[author_select]}
         print(author_select,len(real_res[author_select]))
         print('----> model_author',
               '%.2f'%pairwise_f1(real_res,model_author),len(model_author[author_select]))
@@ -260,6 +274,8 @@ if __name__=="__main__":
               '%.2f'%pairwise_f1(real_res,model_at),len(model_at[author_select]))
         print('----> model_a2t',
               '%.2f'%pairwise_f1(real_res,model_a2t),len(model_a2t[author_select]))
+        print('----> model_at2',
+              '%.2f'%pairwise_f1(real_res,model_at2),len(model_at2[author_select]))
 
 
 
