@@ -155,10 +155,22 @@ class GraphTitles(GraphBase):
         self.sim_matrix=similarity_lsi[lsi_corpus]
 
     def get_cluster(self):
-        pass
+        init_cluster=self.get_connected_components()
+        
+        
 
     def dist_two_paper_sets(self,pid1s,pid2s):
-        pass
+        max_dist=-100
+        for i1,p1 in enumerate(pid1s):
+            index1=self.nodes.index(p1)
+            min_dist=10000
+            for i2,p2 in enumerate(pid2s):
+                index2=self.nodes.index(p2)
+                if self.sim_matrix[index1][index2]<min_dist:
+                    min_dist=self.sim_matrix[index1][index2]
+            if min_dist>max_dist:
+                max_dist=min_dist
+                
 
 if __name__=="__main__":
     author_list=['li_guo', 'bo_shen', 'di_wang', 'long_wang', 'qiang_xu', 
