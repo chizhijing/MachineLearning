@@ -10,5 +10,5 @@ AccountInfo.py
 */*/__pycache__
 */__pycache__
 .vscode
-.WhoIsWho/data
-.WhoIsWho/result
+WhoIsWho/data
+WhoIsWho/result

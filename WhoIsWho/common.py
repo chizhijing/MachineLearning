@@ -53,6 +53,48 @@ def preprocessorg(org):
         org = org.split(';')[0]  # 多个机构只取第一个
     return org
 
+def process_org2(org):
+    if org=='': return org
+    org = org.replace('Sch.', 'School')
+    org = org.replace('Dept.', 'Department')
+    org = org.replace('Coll.', 'College')
+    org = org.replace('Inst.', 'Institute')
+    org = org.replace('Univ.', 'University')
+    org = org.replace('Lab ', 'Laboratory ')
+    org = org.replace('Lab.', 'Laboratory')
+    org = org.replace('Natl.', 'National')
+    org = org.replace('Comp.', 'Computer')
+    org = org.replace('Sci.', 'Science')
+    org = org.replace('Tech.', 'Technology')
+    org = org.replace('Technol.', 'Technology')
+    org = org.replace('Elec.', 'Electronic')
+    org = org.replace('Engr.', 'Engineering')
+    org = org.replace('Aca.', 'Academy')
+    org = org.replace('Syst.', 'Systems')
+    org = org.replace('Eng.', 'Engineering')
+    org = org.replace('Res.', 'Research')
+    org = org.replace('Appl.', 'Applied')
+    org = org.replace('Chem.', 'Chemistry')
+    org = org.replace('Prep.', 'Petrochemical')
+    org = org.replace('Phys.', 'Physics')
+    org = org.replace('Phys.', 'Physics')
+    org = org.replace('Mech.', 'Mechanics')
+    org = org.replace('Mat.', 'Material')
+    org = org.replace('Cent.', 'Center')
+    org = org.replace('Ctr.', 'Center')
+    org = org.replace('Behav.', 'Behavior')
+    org = org.replace('Atom.', 'Atomic')
+    org = org.replace('C.', 'Center')
+    org = org.replace('Ophthal.', 'Ophthalmic')
+    org = org.replace('Prop', 'Propagation')
+    org = org.replace('Propagation.', 'Propagation')
+    org = org.lower()
+    org = org.split(',')
+    org = [temp.strip() for temp in org if temp != '']
+
+    return org
+
+
 #正则去标点
 def etl(content):
     content = re.sub("[\s+\.\!\/,;$%^*(+\"\')]+|[+——()?【】“”！，。？、~@#￥%……&*（）]+", " ", content)
@@ -79,6 +121,35 @@ def pairwise_f1(real_dict,pre_dict):
             real_pair.extend(list(itertools.combinations(cluster,2)))
         for cluster in pre_dict[key]:  # 每一个实际作者
             pre_pair.extend(list(itertools.combinations(cluster, 2)))
+        if len(pre_pair)==0 or len(real_pair)==0:
+            print(key,'pre_num',len(pre_pair),'real_num',len(real_pair))
+            continue
+#        print(key,len(real_dict[key]),len(pre_dict[key]))
+        intersection=set(real_pair) & set(pre_pair)
+        precision=len(intersection)/len(pre_pair)
+        recall=len(intersection)/len(real_pair)
+        f1=precision*recall*2/(precision+recall)
+        sum_f1+=f1
+        # print(key,'precision',precision,'recall',recall,'f1',f1)
+        res[key]=[intersection,precision,recall,f1]
+    if len(res)==0: return -1
+#    print(sum_f1 / len(res))
+    return sum_f1/len(res)
+# 计算pairwise precision
+def pairwise_f1_new(real_dict,pre_dict):
+    res={}
+    sum_f1=0
+    for key in real_dict: # 真实分类中的每一个同名作者
+        real_pair = []
+        pre_pair = []
+        for cluster in real_dict[key]:    # 每一个实际作者
+            self_pair=[(p,p) for p in cluster]
+            real_pair.extend(list(itertools.combinations(cluster,2)))
+            real_pair.extend(self_pair)
+        for cluster in pre_dict[key]:  # 每一个实际作者
+            self_pair=[(p,p) for p in cluster]
+            pre_pair.extend(list(itertools.combinations(cluster, 2)))
+            pre_pair.extend(self_pair)
         if len(pre_pair)==0 or len(real_pair)==0:
             print(key,'pre_num',len(pre_pair),'real_num',len(real_pair))
             continue
