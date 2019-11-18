@@ -1,0 +1,14 @@
+.idea/
+*.png
+*.npy
+*.pyc
+*.csv
+SocketMT5.py
+TestCollection
+AccountInfo.py
+.vs
+*/*/__pycache__
+*/__pycache__
+.vscode
+.WhoIsWho/data
+.WhoIsWho/result
