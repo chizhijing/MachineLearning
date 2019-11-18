@@ -140,6 +140,9 @@ class GraphAuthors(GraphBase):
                 # 使用组织机构进行的判断
                 len_o1, len_o2, dist_o1_o2 = get_org_infor(self.author_org[i1], self.author_org[i2])
                 if len_o1 == 0 or len_o2 == 0: continue  # 组织机构为空的不能进行判断
+                if dist_o1_o2 == 0 or dist_o1_o2 < min(len_o1, len_o2) / 5:
+                    self.graph.add_edge(node1, node2)
+                    continue
                 p_org1=process_org2(self.author_org[i1])
                 p_org2=process_org2(self.author_org[i2])
                 if len(set(p_org1) & set(p_org2))>=min(len(set(p_org1)),len(set(p_org1))):
