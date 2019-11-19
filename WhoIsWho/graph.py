@@ -16,7 +16,6 @@ train_pub_path = 'data/train/train_pub.json'
 my_stopwords=set('for a an of the and to in on by as at from with under its some based '
                  '& ]- ≠ < > . : , ( ) i ii iii iv v i 1 2 3 4 5 6 7 8'.split(' '))
 
-
 def is_same_org(org1, org2):
     p_org1=process_org2(org1)
     p_org2 = process_org2(org2)
@@ -138,15 +137,15 @@ class GraphAuthors(GraphBase):
                     self.graph.add_edge(node1, node2)
                     continue
                 # 使用组织机构进行的判断
-                len_o1, len_o2, dist_o1_o2 = get_org_infor(self.author_org[i1], self.author_org[i2])
+                len_o1, len_o2, dist_o1_o2 = get_org_infor(self.author_org[i1].lower(), self.author_org[i2].lower())
                 if len_o1 == 0 or len_o2 == 0: continue  # 组织机构为空的不能进行判断
-                if dist_o1_o2 == 0 or dist_o1_o2 < min(len_o1, len_o2) / 5:
+                if dist_o1_o2 == 0 or dist_o1_o2 < min(len_o1, len_o2) / 10:
                     self.graph.add_edge(node1, node2)
                     continue
-                p_org1=process_org2(self.author_org[i1])
-                p_org2=process_org2(self.author_org[i2])
-                if len(set(p_org1) & set(p_org2))>=min(len(set(p_org1)),len(set(p_org1))):
-                    self.graph.add_edge(node1, node2)
+                # p_org1=process_org2(self.author_org[i1])
+                # p_org2=process_org2(self.author_org[i2])
+                # if len(set(p_org1) & set(p_org2))>=min(len(set(p_org1)),len(set(p_org1))):
+                #     self.graph.add_edge(node1, node2)
                 # # print(self.author_org[i1], self.author_org[i2])
                 # len_o1, len_o2, dist_o1_o2 = get_org_infor(self.author_org[i1].lower(), self.author_org[i2].lower())
                 # if len_o1 == 0 or len_o2 == 0: continue  # 组织机构为空的不能进行判断

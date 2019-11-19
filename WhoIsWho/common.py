@@ -94,7 +94,6 @@ def process_org2(org):
 
     return org
 
-
 #正则去标点
 def etl(content):
     content = re.sub("[\s+\.\!\/,;$%^*(+\"\')]+|[+——()?【】“”！，。？、~@#￥%……&*（）]+", " ", content)

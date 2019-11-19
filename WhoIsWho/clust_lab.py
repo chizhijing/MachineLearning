@@ -18,7 +18,6 @@ if __name__=='__main__':
         g_a=GraphAuthors(train_data[author_select],author_select)
         g_a.add_edge()
         graph_author_dict[author_select]=g_a
-
 # 
     for author_select in author_list:
         print(author_select)
